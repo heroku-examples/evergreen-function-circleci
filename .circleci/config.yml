@@ -1,0 +1,48 @@
+version: 2.1
+
+orbs:
+  # https://circleci.com/orbs/registry/orb/circleci/salesforce-sfdx
+  sfdx: circleci/salesforce-sfdx@2.1.0
+
+workflows:
+  version: 2
+  on-push:
+    jobs:
+      - test
+
+jobs:
+  test:
+    executor: sfdx/default
+
+    environment:
+      # Expects the following set in CircleCI environment variables:
+      # SFDX_CONSUMER_KEY
+      # SFDX_JWT_KEY
+      # SFDX_USERNAME
+
+    steps:
+      - checkout
+      - setup_remote_docker
+      - sfdx/install
+      - sfdx/auth:
+          defaultusername: $SFDX_USERNAME
+      - sfdx/scratch-create:
+          scratch-alias: circleci-job
+          scratch-config: ./config/project-scratch-def.json
+      - run:
+          name: Deploy project to scratch org
+          command: sfdx force:source:push -u circleci-job
+      - run:
+          name: Tests
+          command: |
+            # run tests for each function
+            wd="$(pwd)"
+            for f in `ls $wd/functions/`; do
+              cd "$wd/functions/$f/"
+              echo "▶️ functions/$f: npm install"
+              npm install
+              echo "▶️ functions/$f: npm test"
+              npm test
+            done
+      - sfdx/scratch-delete:
+          scratch-alias: circleci-job
