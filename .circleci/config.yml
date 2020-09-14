@@ -24,6 +24,13 @@ jobs:
       - checkout
       - setup_remote_docker
       - sfdx/install
+      - run:
+          name: Install Evergreen CLI
+          command: |
+            echo "▶️  sfdx plugins:install @salesforce/plugin-evergreen"
+            sfdx plugins:install @salesforce/plugin-evergreen
+            echo "▶️  sfdx plugins"
+            sfdx plugins
       - sfdx/auth:
           defaultusername: $SFDX_USERNAME
       - sfdx/scratch-create:
@@ -39,10 +46,12 @@ jobs:
             wd="$(pwd)"
             for f in `ls $wd/functions/`; do
               cd "$wd/functions/$f/"
-              echo "▶️ functions/$f: npm install"
+              echo "▶️  functions/$f: npm install"
               npm install
-              echo "▶️ functions/$f: npm test"
+              echo "▶️  functions/$f: npm test"
               npm test
+              echo "▶️  functions/$f: sfdx evergreen:function:build"
+              sfdx evergreen:function:build circleci-job
             done
       - sfdx/scratch-delete:
           scratch-alias: circleci-job
