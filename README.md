@@ -33,7 +33,7 @@ During the Functions Pilot, their continuous integration story will utilize Circ
 
 ### 1. Create a certificate
 
-Set the certificate to identify as “CircleCI”, but really the field contents of the cert do not matter. All Salesforce cares about is the cryptographic signing & verification enabled by the certificate pair.
+The certificate will be used for cryptographic verification of authentication requests from `sfdx` on CircleCI. When prompted, set the certificate's common name to “CircleCI”. Other fields will be visible in the Salesforce Connected App's details, but can be safely ignored.
 
 In your command shell:
 
@@ -41,10 +41,10 @@ In your command shell:
 mkdir circleci-jwt-auth/ && cd circleci-jwt-auth/
 
 export PASS="$(openssl rand -hex 20)"
-openssl genrsa -des3 \
+openssl genrsa -aes256 \
   -passout "pass:$PASS" \
   -out connected-app.pass.key \
-  2048
+  4096
 openssl rsa -passin "pass:$PASS" \
   -in connected-app.pass.key \
   -out connected-app.key
@@ -68,7 +68,17 @@ base64 connected-app.key > connected-app.key.base64
 
 Create a Connected App in the Salesforce Dev Hub that provides authentication for external services based on the new certificate.
 
-In Salesforce **Setup** → **App Manager**, create a **New Connected App**, with the following **Name**, **Callback URL** and **Selected Oauth Scopes** set.
+In Salesforce **Setup** → **App Manager**, create a **New Connected App**, with the following set:
+
+- **Name** `CircleCI`
+- **Contact Email**
+  - your own org's admin email
+- **Callback URL** `https://localhost:1717/OauthRedirect`
+  - allows local `sfdx` CLI to complete auth flow
+- **Selected Oauth Scopes** required by `sfdx` CLI:
+  - Access and manage your data (api)
+  - Perform requests on your behalf at any time (refresh_token, offline_access)
+  - Provide access to your data via the Web (web)
 
 As the new Connected App's **Digital Signature file**, upload the file (created above) `circleci-jwt-auth/connected-app.crt`.
 
@@ -76,7 +86,12 @@ As the new Connected App's **Digital Signature file**, upload the file (created 
 
 📝  Note the **Consumer Key** value of the Connected App for use later in CircleCI's `SFDX_CONSUMER_KEY` environment variable.
 
-Then **Manage** that app to set **Permitted Users** and the **Profile** as follows:
+Then **Manage** the app:
+
+- **Edit Policies** → **Permitted Users** select:
+  - Admin approved users are pre-authorized
+- **Manage Profiles** select:
+  - System Administrator
 
 ![Screenshot of manage Connected App](doc/images/connected-app.png)
 
@@ -96,6 +111,7 @@ Configure the CircleCI project to edit its **Environment Variables**. Set the fo
 
   - **`SFDX_CONSUMER_KEY`** to the Consumer Key display in Salesforce Setup for the Connected App
   - **`SFDX_JWT_KEY`** to the contents of `circleci-jwt-auth/connected-app.key.base64`
+    - clipboard copy on macOS: `cat circleci-jwt-auth/connected-app.key.base64 | pbcopy`
   - **`SFDX_USERNAME`** the Salesforce username of a **System Administrator** (or whatever Profile you assigned to the Connected App).
 
 
