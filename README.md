@@ -77,8 +77,8 @@ In Salesforce **Setup** → **App Manager**, create a **New Connected App**, wit
   - Access and manage your data (api)
   - Perform requests on your behalf at any time (refresh_token, offline_access)
   - Provide access to your data via the Web (web)
-
-As the new Connected App's **Digital Signature file**, upload the file (created above) `circleci-jwt-auth/connected-app.crt`.
+- **User Digital Signatures** check ✅
+  - select the file (created above) `circleci-jwt-auth/connected-app.crt`.
 
 ![Screenshot of new Connected App](doc/images/basic-information.png)
 
