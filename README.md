@@ -48,18 +48,21 @@ openssl rsa -passin "pass:$PASS" \
   -out connected-app.key
 rm connected-app.pass.key
 
+# This next command will create the certificate identity;
+# fill in sensible values, which will appear in the connected app in Salesforce;
+# set the Common Name to "CircleCI".
 openssl req -new \
   -key connected-app.key \
   -out connected-app.csr
+
 openssl x509 -req -sha256 -days 365 \
   -in connected-app.csr \
   -signkey connected-app.key \
   -out connected-app.crt
-
 base64 connected-app.key > connected-app.key.base64
 ```
 
-🤐  These `.key` & `.key.base64` files contain secret data. Maybe you should **save them to a secure note, such as in LastPass**, but **do not commit them to version control**.
+🤐  The resulting `.key` & `.key.base64` files contain secret data. Maybe you should **save them to a secure note, such as in LastPass**, but **do not commit them to version control**.
 
 
 ### 2. Create a "CircleCI" Connected App
