@@ -1,8 +1,6 @@
 # Example of testing Evergreen functions with CircleCI
 
-During the Functions Pilot, their continuous integration story will utilize CircleCI & GitHub. This repo is a working example to develop & test toward Pilot.
-
-👓 For more context, see: [Functions Continuous Integration | Delivery PRD](https://salesforce.quip.com/cJASAvjPQV8k#WEBACAAqmIJ).
+During the Functions Pilot, their continuous integration story will utilize CircleCI & GitHub.
 
 
 ## Requirements
