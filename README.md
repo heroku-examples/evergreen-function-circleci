@@ -74,25 +74,30 @@ In Salesforce **Setup** → **App Manager**, create a **New Connected App**, wit
 - **Name** `CircleCI`
 - **Contact Email**
   - your own org's admin email
+- **Enable OAuth Settings** check ✅
 - **Callback URL** `https://localhost:1717/OauthRedirect`
   - allows local `sfdx` CLI to complete auth flow
-- **Selected Oauth Scopes** required by `sfdx` CLI:
-  - Access and manage your data (api)
-  - Perform requests on your behalf at any time (refresh_token, offline_access)
-  - Provide access to your data via the Web (web)
 - **User Digital Signatures** check ✅
   - select the file (created above) `circleci-jwt-auth/connected-app.crt`.
+- **Selected Oauth Scopes** required by `sfdx` CLI:
+  - "Access and manage your data (api)"
+  - "Perform requests on your behalf at any time (refresh_token, offline_access)"
+  - "Provide access to your data via the Web (web)"
+- **Save** the new app
+  - 📝  Note the **Consumer Key** value of the Connected App for use later in CircleCI's `SFDX_CONSUMER_KEY` environment variable.
 
 ![Screenshot of new Connected App](doc/images/basic-information.png)
 
-📝  Note the **Consumer Key** value of the Connected App for use later in CircleCI's `SFDX_CONSUMER_KEY` environment variable.
-
-Then **Manage** the app:
+Then, **Manage** the app:
 
 - **Edit Policies** → **Permitted Users** select:
-  - Admin approved users are pre-authorized
-- **Manage Profiles** select:
-  - System Administrator
+  - "Admin approved users are pre-authorized"
+- **Save** the app 
+
+Then, **Manage Profiles**:
+ 
+- select: "System Administrator"
+- **Save** the profile assignment 
 
 ![Screenshot of manage Connected App](doc/images/connected-app.png)
 
