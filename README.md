@@ -80,9 +80,9 @@ In Salesforce **Setup** → **App Manager**, create a **New Connected App**, wit
 - **User Digital Signatures** check ✅
   - select the file (created above) `circleci-jwt-auth/connected-app.crt`.
 - **Selected Oauth Scopes** required by `sfdx` CLI:
-  - "Access and manage your data (api)"
-  - "Perform requests on your behalf at any time (refresh_token, offline_access)"
-  - "Provide access to your data via the Web (web)"
+  - "Manage user data via APIs (api)"
+  - "Manage user data via Web browsers (web)"
+  - "Perform requests at any time (refresh_token, offline_access)"
 - **Save** the new app
   - 📝  Note the **Consumer Key** value of the Connected App for use later in CircleCI's `SFDX_CONSUMER_KEY` environment variable.
 
