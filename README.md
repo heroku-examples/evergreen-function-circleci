@@ -1,6 +1,6 @@
-# Example of testing Evergreen functions with CircleCI
+# Example of testing Salesforce Functions with CircleCI
 
-During the Functions Pilot, their continuous integration story will utilize CircleCI & GitHub.
+Utilize CircleCI & GitHub to enable CI/CD with Salesforce Functions.
 
 
 ## Requirements
